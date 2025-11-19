@@ -1,0 +1,34 @@
+.topbar {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--mid-gray);
+  box-shadow: 0 2px 8px #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 32px 0 252px;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+}
+.topbar-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.topbar-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  letter-spacing: 0.5px;
+}
+@media (max-width: 900px) {
+  .topbar {
+    padding: 0 12px 0 72px;
+    height: 54px;
+  }
+  .topbar-title {
+    font-size: 1.05rem;
+  }
+} 

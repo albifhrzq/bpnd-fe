@@ -1,0 +1,116 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 100vh;
+  background: linear-gradient(120deg, #1e3a5c 70%, #2563eb 100%);
+  color: #fff;
+  box-shadow: 2px 0 8px #e5e7eb;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.2s, box-shadow 0.2s;
+  border-top-right-radius: var(--radius);
+}
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 18px 18px 18px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--mid-gray);
+  margin-bottom: 8px;
+  transition: opacity 0.2s;
+}
+.sidebar-header img {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #fff;
+}
+.sidebar-header span {
+  transition: opacity 0.2s;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.sidebar li {
+  margin-bottom: 6px;
+}
+.sidebar li.active button {
+  background: var(--accent-blue);
+  font-weight: bold;
+  color: #fff;
+  border-left: 4px solid #fff;
+  box-shadow: 0 2px 8px #2563eb33;
+}
+.sidebar button {
+  width: 100%;
+  background: none;
+  color: #fff;
+  border: none;
+  padding: 13px 24px;
+  text-align: left;
+  font-size: 1rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, border 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar button:hover {
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 2px 8px #2563eb33;
+  transform: translateX(4px) scale(1.03);
+}
+.sidebar-toggle {
+  display: block;
+  background: var(--primary-blue);
+  color: #fff;
+  border: none;
+  font-size: 1.5rem;
+  margin: 18px 0 0 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.sidebar-toggle:hover {
+  background: #2563eb;
+}
+@media (max-width: 900px) {
+  .sidebar {
+    width: 60px;
+    min-width: 60px;
+    border-top-right-radius: 0;
+    padding: 0;
+  }
+  .sidebar.open {
+    width: 220px;
+    min-width: 220px;
+    box-shadow: 2px 0 16px #2563eb33;
+  }
+  .sidebar-header {
+    display: flex;
+    opacity: 0;
+  }
+  .sidebar.open .sidebar-header {
+    opacity: 1;
+  }
+  .sidebar-toggle {
+    display: block;
+    margin: 18px 0 0 10px;
+  }
+  .sidebar ul {
+    padding-top: 48px;
+  }
+} 
