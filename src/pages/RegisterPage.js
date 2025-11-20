@@ -1,6 +1,6 @@
 // frontend/src/pages/RegisterPage.jsx
 import React, { useState } from 'react';
-import api, { API_BASE_URL } from '../config/api';
+import api from '../config/api';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage = () => {

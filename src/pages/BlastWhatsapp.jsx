@@ -82,11 +82,11 @@ const BlastWhatsapp = () => {
   const handleBlast = async (e) => {
     e.preventDefault();
     if (!message.trim()) {
-      toast.warn('Pesan tidak boleh kosong');
+      toast.warn('Pesan tidak boleh kosong', { autoClose: 5000 });
       return;
     }
     if (selectedUsers.length === 0) {
-      toast.warn('Pilih minimal satu pengguna');
+      toast.warn('Pilih minimal satu pengguna', { autoClose: 5000 });
       return;
     }
 
@@ -103,13 +103,21 @@ const BlastWhatsapp = () => {
         }),
       };
 
+      console.log('📤 Sending blast message:', payload);
       const res = await api.post('/api/whatsapp/blast', payload);
-      toast.success(res.data.message || 'Pesan berhasil dikirim');
+      console.log('✅ Blast response:', res.data);
+      
+      const successCount = res.data.results?.filter(r => r.status === 'success').length || 0;
+      const failCount = res.data.results?.filter(r => r.status === 'failed').length || 0;
+      
+      toast.success(`Pesan berhasil dikirim ke ${successCount} pengguna${failCount > 0 ? `, gagal ${failCount}` : ''}`, { autoClose: 5000 });
       setMessage('');
       setSelectedUsers([]);
     } catch (err) {
+      console.error('❌ Blast error:', err);
+      console.error('Error response:', err.response?.data);
       const msg = err.response?.data?.message || 'Terjadi kesalahan saat mengirim pesan';
-      toast.error(msg);
+      toast.error(msg, { autoClose: 5000 });
     } finally {
       setLoading(false);
     }
@@ -163,7 +171,18 @@ const BlastWhatsapp = () => {
           </button>
         </form>
 
-        <ToastContainer position="top-center" autoClose={3000} />
+        <ToastContainer 
+          position="top-center" 
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          style={{ zIndex: 99999 }}
+        />
       </div>
     </SuperAdminLayout>
   );

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Base URL configuration
-export const BASE_URL = 'http://localhost:5000';
+// Base URL configuration - read from environment variable
+export const BASE_URL = process.env.REACT_APP_BPND_API_URL;
 
 // Create axios instance
 const api = axios.create({

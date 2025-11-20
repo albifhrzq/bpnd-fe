@@ -16,6 +16,11 @@ const AdminDashboard = () => {
   const [recentLaporan, setRecentLaporan] = useState([]); // PASTIKAN SELALU ARRAY
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [whatsappStatus, setWhatsappStatus] = useState({
+    isReady: false,
+    hasQRCode: false,
+    qrCode: null
+  });
 
   const Layout = user?.role === 'superadmin' ? SuperAdminLayout : AdminLayout;
 
@@ -23,8 +28,11 @@ const AdminDashboard = () => {
     if (token) {
       fetchStats();
       fetchRecentLaporan();
+      if (user?.role === 'superadmin') {
+        fetchWhatsAppStatus();
+      }
     }
-  }, [token]);
+  }, [token, user?.role]);
 
   const fetchStats = async () => {
     try {
@@ -75,6 +83,29 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchWhatsAppStatus = async () => {
+    try {
+      console.log('🔍 Fetching WhatsApp status...');
+      const res = await api.get('/api/whatsapp/qrcode', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      console.log('📱 WhatsApp status response:', res.data);
+      setWhatsappStatus({
+        isReady: res.data.isReady,
+        hasQRCode: res.data.hasQRCode,
+        qrCode: res.data.qrCode
+      });
+      console.log('✅ WhatsApp status updated:', {
+        isReady: res.data.isReady,
+        hasQRCode: res.data.hasQRCode,
+        hasQRCodeData: !!res.data.qrCode
+      });
+    } catch (err) {
+      console.error('❌ Error fetching WhatsApp status:', err);
+      console.error('Error response:', err.response?.data);
+    }
+  };
+
   // Helper function untuk mendapatkan URL foto
   const getFotoUrl = (filename) => {
     if (!filename) return null;
@@ -118,6 +149,106 @@ const AdminDashboard = () => {
           >
             Coba Lagi
           </button>
+        </div>
+      )}
+
+      {/* WhatsApp QR Code Section - Hanya untuk Super Admin */}
+      {user?.role === 'superadmin' && (
+        <div style={{
+          background: 'rgba(30, 41, 59, 0.5)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
+          padding: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+          marginBottom: '30px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            marginBottom: '20px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ fontSize: '28px' }}>💬</div>
+              <div>
+                <div style={{ color: '#fff', fontSize: '18px', fontWeight: '600' }}>
+                  Status WhatsApp
+                </div>
+                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px' }}>
+                  {whatsappStatus.isReady ? '✅ Terhubung' : '⏳ Menunggu koneksi...'}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={fetchWhatsAppStatus}
+              style={{
+                padding: '8px 16px',
+                background: 'rgba(59, 130, 246, 0.2)',
+                border: '1px solid rgba(59, 130, 246, 0.3)',
+                borderRadius: '8px',
+                color: '#3b82f6',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(59, 130, 246, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(59, 130, 246, 0.2)';
+              }}
+            >
+              🔄 Refresh QR Code
+            </button>
+          </div>
+
+          {whatsappStatus.hasQRCode && whatsappStatus.qrCode ? (
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ 
+                background: '#fff', 
+                padding: '20px', 
+                borderRadius: '12px',
+                display: 'inline-block',
+                boxShadow: '0 4px 8px rgba(0,0,0,0.3)'
+              }}>
+                <img 
+                  src={whatsappStatus.qrCode} 
+                  alt="WhatsApp QR Code" 
+                  style={{ 
+                    width: '250px', 
+                    height: '250px',
+                    display: 'block'
+                  }} 
+                />
+              </div>
+              <div style={{ 
+                color: 'rgba(255,255,255,0.8)', 
+                marginTop: '16px',
+                fontSize: '14px'
+              }}>
+                Scan QR code ini dengan WhatsApp Anda untuk menghubungkan
+              </div>
+            </div>
+          ) : whatsappStatus.isReady ? (
+            <div style={{ 
+              textAlign: 'center', 
+              color: '#4ade80',
+              fontSize: '16px',
+              padding: '20px'
+            }}>
+              ✅ WhatsApp sudah terhubung dan siap digunakan!
+            </div>
+          ) : (
+            <div style={{ 
+              textAlign: 'center', 
+              color: 'rgba(255,255,255,0.7)',
+              padding: '20px'
+            }}>
+              Memuat status WhatsApp...
+            </div>
+          )}
         </div>
       )}
 
